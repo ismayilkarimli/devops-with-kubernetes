@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loggenerator-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: loggenerator
+  template:
+    metadata:
+      labels:
+        app: loggenerator
+    spec:
+      containers:
+        - name: loggenerator
+          image: ismayilkarimli/devops-with-kubernetes:1.3
