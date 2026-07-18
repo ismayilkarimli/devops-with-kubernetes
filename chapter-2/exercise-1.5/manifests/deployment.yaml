@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ping-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ping-app
+  template:
+    metadata:
+      labels:
+        app: ping-app
+    spec:
+      containers:
+        - name: ping-app
+          image: ismayilkarimli/devops-with-kubernetes:1.5
+          imagePullPolicy: Always
+          env:
+            - name: PORT
+              value: "8081"
