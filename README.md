@@ -6,5 +6,6 @@
 4. [Exercise 1.4](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-2/exercise-1.4) - The project, step 2
 5. [Exercise 1.5](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-2/exercise-1.5) - The project, step 3
 6. [Exercise 1.6](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-2/exercise-1.6) - The project, step 4
-7. [Exercise 1.8](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-2/exercise-1.8) - The project, step 5
-8. [Exercise 1.9](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-2/exercise-1.9) - More services
+7. [Exercise 1.7](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-2/exercise-1.7) - External access with Ingress
+8. [Exercise 1.8](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-2/exercise-1.8) - The project, step 5
+9. [Exercise 1.9](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-2/exercise-1.9) - More services
