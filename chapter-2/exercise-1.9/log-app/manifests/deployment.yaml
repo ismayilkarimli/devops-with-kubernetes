@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ping-app-dep
+  name: log-app-dep
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ping-app
+      app: log-app
   template:
     metadata:
       labels:
-        app: ping-app
+        app: log-app
     spec:
       containers:
-        - name: ping-app
-          image: ismayilkarimli/devops-with-kubernetes:1.8
+        - name: log-app
+          image: ismayilkarimli/devops-with-kubernetes:1.9-log-app
           imagePullPolicy: Always
           env:
             - name: PORT
