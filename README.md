@@ -9,3 +9,4 @@
 7. [Exercise 1.7](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-2/exercise-1.7) - External access with Ingress
 8. [Exercise 1.8](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-2/exercise-1.8) - The project, step 5
 9. [Exercise 1.9](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-2/exercise-1.9) - More services
+10. [Exercise 1.10](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-2/exercise-1.10) - Even more services

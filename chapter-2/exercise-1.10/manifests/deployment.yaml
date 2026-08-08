@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logs-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logs-app
+  template:
+    metadata:
+      labels:
+        app: logs-app
+    spec:
+      volumes:
+        - name: logs-dir
+          emptyDir: {}
+      containers:
+        - name: log-writer
+          image: ismayilkarimli/devops-with-kubernetes:1.10-writer
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: logs-dir
+              mountPath: /usr/src/app/logs
+        - name: log-reader
+          image: ismayilkarimli/devops-with-kubernetes:1.10-reader
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: logs-dir
+              mountPath: /usr/src/app/logs
