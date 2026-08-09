@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ping-pong-app-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ping-pong-app
+  template:
+    metadata:
+      labels:
+        app: ping-pong-app
+    spec:
+      volumes:
+        - name: ping-pong-dir
+          persistentVolumeClaim:
+            claimName: ping-pong-pvc
+      containers:
+        - name: log
+          image: ismayilkarimli/devops-with-kubernetes:1.11-log
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: ping-pong-dir
+              mountPath: /usr/src/app/logs
+        - name: ping
+          image: ismayilkarimli/devops-with-kubernetes:1.11-ping
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: ping-pong-dir
+              mountPath: /usr/src/app/logs
