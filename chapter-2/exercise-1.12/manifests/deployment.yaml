@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: picture-app-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: picture-app
+  template:
+    metadata:
+      labels:
+        app: picture-app
+    spec:
+      containers:
+        - name: picture-app
+          image: ismayilkarimli/devops-with-kubernetes:1.12
+          imagePullPolicy: Always
+          env:
+            - name: PORT
+              value: "8081"
