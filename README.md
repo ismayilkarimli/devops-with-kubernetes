@@ -13,3 +13,7 @@
 11. [Exercise 1.11](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-2/exercise-1.11) - Persisting data
 12. [Exercise 1.12](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-2/exercise-1.12) - The project, step 6
 13. [Exercise 1.13](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-2/exercise-1.13) - The project, step 7
+
+# Chapter 3
+
+1. [Exercise 2.1](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-3/exercise-2.1) - Network communication
