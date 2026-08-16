@@ -17,3 +17,4 @@
 # Chapter 3
 
 1. [Exercise 2.1](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-3/exercise-2.1) - Connecting pods
+2. [Exercise 2.2](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-3/exercise-2.2) - The project, step 8
