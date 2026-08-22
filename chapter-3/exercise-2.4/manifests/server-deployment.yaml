@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: todo-app-ns
+  name: todo-server-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-server
+  template:
+    metadata:
+      name: todo-server-1234
+      labels:
+        app: todo-server
+    spec:
+      containers:
+        - name: todo-server
+          image: ismayilkarimli/devops-with-kubernetes:2.4-todo-server
+          imagePullPolicy: Always
+          env:
+            - name: PORT
+              value: "8081"
+            - name: TODO_APP_URL
+              value: http://todo-app-svc:2345

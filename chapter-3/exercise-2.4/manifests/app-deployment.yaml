@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: todo-app-ns
+  name: todo-app-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-app
+  template:
+    metadata:
+      name: todo-app-1234
+      labels:
+        app: todo-app
+    spec:
+      volumes:
+        - name: todo-app-vol
+          persistentVolumeClaim:
+            claimName: todo-app-pvc
+      containers:
+        - name: todo-app
+          image: ismayilkarimli/devops-with-kubernetes:2.4-todo-app
+          imagePullPolicy: Always
+          env:
+            - name: PORT
+              value: "8081"
+            - name: CACHE_DIR
+              value: /usr/src/app/data
+            - name: TODO_SERVER_URL
+              value: http://todo-server-svc:2346
+          volumeMounts:
+            - name: todo-app-vol
+              mountPath: /usr/src/app/data
