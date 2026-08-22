@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-app-dep
+  namespace: log-app-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-app
+  template:
+    metadata:
+      labels:
+        app: log-app
+    spec:
+      containers:
+        - name: log
+          image: ismayilkarimli/devops-with-kubernetes:2.3-log
+          imagePullPolicy: Always
+          env:
+            - name: PONG_SERVICE_URL
+              value: http://ping-pong-app-svc:2346/pings
+        - name: ping
+          image: ismayilkarimli/devops-with-kubernetes:2.3-ping
+          imagePullPolicy: Always
