@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: log-output-app-cm
+  namespace: log-output-app-ns
+data:
+  information.txt: |
+      this is text from information.txt
+  MESSAGE: hello world

@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: log-output-app-ns
+  name: log-output-app-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-output-app
+  template:
+    metadata:
+      labels:
+        app: log-output-app
+    spec:
+      volumes:
+        - name: config-map-volume
+          configMap:
+            name: log-output-app-cm
+      containers:
+        - name: log
+          image: ismayilkarimli/devops-with-kubernetes:2.5-log
+          volumeMounts:
+            - name: config-map-volume
+              mountPath: /etc/config
+              readOnly: true
+          env:
+            - name: MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: log-output-app-cm
+                  key: MESSAGE
+            - name: PONG_SERVICE_URL
+              value: http://log-output-app-svc:2346/pings
+            - name: PORT
+              value: "8081"
+        - name: ping
+          image: ismayilkarimli/devops-with-kubernetes:2.5-ping
+          env:
+            - name: PORT
+              value: "8082"
