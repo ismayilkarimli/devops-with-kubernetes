@@ -21,3 +21,4 @@
 3. [Exercise 2.3](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-3/exercise-2.3) - Keep them separated
 4. [Exercise 2.4](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-3/exercise-2.4) - The project, step 9
 5. [Exercise 2.5](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-3/exercise-2.5) - Documentation and ConfigMaps
+6. [Exercise 2.6](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-3/exercise-2.6) - The project, step 10

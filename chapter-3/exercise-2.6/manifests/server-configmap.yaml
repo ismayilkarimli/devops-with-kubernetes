@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: todo-app-ns
+  name: todo-server-cm
+data:
+  PORT: "8081"
+  TODO_APP_URL: "http://todo-app-svc:2345"
