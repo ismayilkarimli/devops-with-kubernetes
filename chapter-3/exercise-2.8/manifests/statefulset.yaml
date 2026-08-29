@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: todo-app-db-sset
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-app-db
+  template:
+    metadata:
+      labels:
+        app: todo-app-db
+    spec:
+      containers:
+        - name: todo-app-db
+          image: postgres:15
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_DB
+              value: tododb
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 16Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: todo-app-db-svc
+spec:
+  selector:
+    app: todo-app-db
+  clusterIP: None
+  ports:
+    - port: 5432

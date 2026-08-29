@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-app-server-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-app-server
+  template:
+    metadata:
+      labels:
+        app: todo-app-server
+    spec:
+      containers:
+        - name: todo-app-server
+          image: ismayilkarimli/devops-with-kubernetes:2.8-server
+          envFrom:
+            - configMapRef:
+                name: todo-app-server-cm

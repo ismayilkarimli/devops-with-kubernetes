@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-app-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-app
+  template:
+    metadata:
+      labels:
+        app: todo-app
+    spec:
+      volumes:
+        - name: todo-app-volume
+          persistentVolumeClaim:
+            claimName: todo-app-pvc
+      containers:
+        - name: app
+          image: ismayilkarimli/devops-with-kubernetes:2.8-app
+          volumeMounts:
+            - name: todo-app-volume
+              mountPath: /usr/src/app/data
+          envFrom:
+            - configMapRef:
+                name: todo-app-cm
