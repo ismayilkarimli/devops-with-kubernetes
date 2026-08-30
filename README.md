@@ -26,3 +26,7 @@
 8. [Exercise 2.8](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-3/exercise-2.8) - The project, step 11
 9. [Exercise 2.9](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-3/exercise-2.9) - The project, step 12
 10. [Exercise 2.10](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-3/exercise-2.10) - The project, step 13
+
+# Chapter 4
+
+1. [Exercise 3.1](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-4/exercise-3.1) - Pingpong GKE
