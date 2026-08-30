@@ -25,3 +25,4 @@
 7. [Exercise 2.7](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-3/exercise-2.7) - Stateful applications
 8. [Exercise 2.8](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-3/exercise-2.8) - The project, step 11
 9. [Exercise 2.9](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-3/exercise-2.9) - The project, step 12
+10. [Exercise 2.10](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-3/exercise-2.10) - The project, step 13
