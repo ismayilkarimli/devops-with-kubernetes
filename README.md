@@ -30,3 +30,4 @@
 # Chapter 4
 
 1. [Exercise 3.1](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-4/exercise-3.1) - Pingpong GKE
+2. [Exercise 3.2](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-4/exercise-3.2) - Back to Ingress
