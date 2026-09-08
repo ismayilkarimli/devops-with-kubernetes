@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ping-app-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ping-app
+  template:
+    metadata:
+      labels:
+        app: ping-app
+    spec:
+      volumes:
+        - name: config-map-volume
+          configMap:
+            name: ping-app-cm
+      containers:
+        - name: ping-app
+          image: ismayilkarimli/devops-with-kubernetes:3.3-ping
+          imagePullPolicy: Always
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: ping-app-cm
+                  key: DATABASE_URL
+        - name: log-app
+          image: ismayilkarimli/devops-with-kubernetes:3.3-log
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: config-map-volume
+              mountPath: /etc/config
+              readOnly: true
+          env:
+            - name: MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: ping-app-cm
+                  key: MESSAGE
+            - name: PONG_SERVICE_URL
+              value: http://ping-app-svc:2346/pings
