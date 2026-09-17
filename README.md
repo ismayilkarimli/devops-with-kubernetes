@@ -34,3 +34,4 @@
 3. [Exercise 3.3](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-4/exercise-3.3) - To the Gateway
 4. [Exercise 3.4](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-4/exercise-3.4) - Rewritten routing
 5. [Exercise 3.5](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-4/exercise-3.5) - The project, step 14
+6. [Exercise 3.6](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-4/exercise-3.6) - The project, step 15
