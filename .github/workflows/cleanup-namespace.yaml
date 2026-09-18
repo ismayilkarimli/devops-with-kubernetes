@@ -1,0 +1,50 @@
+name: Cleanup deleted branch namespace
+
+on:
+  delete:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  cleanup:
+    if: github.event.ref_type == 'branch' && github.event.ref != 'main'
+    runs-on: ubuntu-latest
+    environment: GKE_PROJECT
+
+    env:
+      NAMESPACE: ${{ github.event.ref }}
+
+    steps:
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: "${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}"
+          service_account: "${{ secrets.SERVICE_ACCOUNT }}"
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+
+      - name: Get GKE credentials
+        uses: google-github-actions/get-gke-credentials@v3
+        with:
+          cluster_name: dwk-gke
+          project_id: ${{ secrets.GKE_PROJECT }}
+          location: europe-north1-b
+
+      - name: Delete branch namespace
+        run: |
+          kubectl delete namespace "$NAMESPACE" \
+            --ignore-not-found=true \
+            --wait=true \
+            --timeout=10m
+
+      - name: Verify namespace is gone
+        run: |
+          if kubectl get namespace "$NAMESPACE" >/dev/null 2>&1; then
+            echo "Namespace '$NAMESPACE' still exists"
+            exit 1
+          fi
+
+          echo "Namespace '$NAMESPACE' has been deleted"
