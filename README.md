@@ -36,3 +36,4 @@
 5. [Exercise 3.5](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-4/exercise-3.5) - The project, step 14
 6. [Exercise 3.6](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-4/exercise-3.6) - The project, step 15
 7. [Exercise 3.7](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-4/exercise-3.7) - The project, step 16
+8. [Exercise 3.8](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-4/exercise-3.8) - The project, step 17
