@@ -76,6 +76,9 @@ jobs:
       - name: Deploy
         working-directory: chapter-4/exercise-3.6/manifests
         run: |-
+          kubectl create namespace $GITHUB_REF_NAME || true
+          kubectl config set-context --current --namespace=$GITHUB_REF_NAME
+          kustomize edit set namespace $GITHUB_REF_NAME
           kustomize edit set image \
             APP/IMAGE="$APP_IMAGE_TAG" \
             SERVER/IMAGE="$SERVER_IMAGE_TAG"
