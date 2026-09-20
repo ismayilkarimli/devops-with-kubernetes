@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: todo-db-backup
+spec:
+  schedule: "0 0 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: dwk-storage-sa
+          restartPolicy: OnFailure
+          containers:
+            - name: database-backup
+              image: google/cloud-sdk:slim
+              env:
+                - name: URL
+                  value: postgres://postgres:postgres@todo-app-db-svc:5432/tododb
+              command:
+                - /bin/bash
+                - -ceu
+                - |
+                  apt-get update
+                  DEBIAN_FRONTEND=noninteractive apt-get install --yes --no-install-recommends postgresql-client
+                  rm -rf /var/lib/apt/lists/*
+
+                  if [ -n "${URL:-}" ]; then
+                    timestamp="$(date +%s)"
+                    dump="/tmp/backup-${timestamp}.sql"
+                    pg_dump -v "$URL" > "$dump"
+                    gcloud storage cp "$dump" "gs://dwk-gke-storage/backups/backup-${timestamp}.sql"
+                  fi
