@@ -1,4 +1,5 @@
 # syntax=docker/dockerfile:1
+# Exercise 3.10 build marker.
 FROM --platform=$BUILDPLATFORM golang:1.25-alpine AS build
 
 ARG TARGETOS

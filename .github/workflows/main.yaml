@@ -32,6 +32,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - uses: google-github-actions/auth@v3
         with:
@@ -58,13 +60,51 @@ jobs:
           echo "APP_IMAGE_TAG=$REGISTRY/$PROJECT_ID/$REPOSITORY/$APP_IMAGE:$GITHUB_SHA" >> "$GITHUB_ENV"
           echo "SERVER_IMAGE_TAG=$REGISTRY/$PROJECT_ID/$REPOSITORY/$SERVER_IMAGE:$GITHUB_SHA" >> "$GITHUB_ENV"
 
+      - name: Select changed exercise directory
+        shell: bash
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+
+          before_sha="$BEFORE_SHA"
+          if [[ -z "$before_sha" || "$before_sha" =~ ^0+$ ]]; then
+            before_sha="$(git rev-parse "$GITHUB_SHA^")"
+          fi
+
+          mapfile -t exercise_dirs < <(
+            git diff --name-only "$before_sha" "$GITHUB_SHA" \
+              | awk -F/ '$1 == "chapter-4" && $2 ~ /^exercise-/ { print $1 "/" $2 }' \
+              | sort -u
+          )
+
+          if ((${#exercise_dirs[@]} == 0)); then
+            echo "No exercise directory changed in this push" >&2
+            exit 1
+          fi
+
+          if ((${#exercise_dirs[@]} > 1)); then
+            echo "More than one exercise directory changed:" >&2
+            printf ' - %s\n' "${exercise_dirs[@]}" >&2
+            exit 1
+          fi
+
+          exercise_dir="${exercise_dirs[0]}"
+          for required_dir in todo-app todo-server manifests; do
+            if [[ ! -d "$exercise_dir/$required_dir" ]]; then
+              echo "Selected exercise is missing $required_dir: $exercise_dir" >&2
+              exit 1
+            fi
+          done
+
+          echo "Using changed exercise directory: $exercise_dir"
+          echo "EXERCISE_DIR=$exercise_dir" >> "$GITHUB_ENV"
+
       - name: Build app image
-        working-directory: chapter-4/exercise-3.10/todo-app
-        run: docker build --platform linux/amd64 --tag "$APP_IMAGE_TAG" .
+        run: docker build --platform linux/amd64 --tag "$APP_IMAGE_TAG" "$EXERCISE_DIR/todo-app"
 
       - name: Build server image
-        working-directory: chapter-4/exercise-3.10/todo-server
-        run: docker build --platform linux/amd64 --tag "$SERVER_IMAGE_TAG" .
+        run: docker build --platform linux/amd64 --tag "$SERVER_IMAGE_TAG" "$EXERCISE_DIR/todo-server"
 
       - name: Publish app image
         run: docker push "$APP_IMAGE_TAG"
@@ -76,11 +116,16 @@ jobs:
         uses: imranismail/setup-kustomize@v3
 
       - name: Deploy
-        working-directory: chapter-4/exercise-3.10/manifests
         run: |-
-          kubectl create namespace $GITHUB_REF_NAME || true
-          kubectl config set-context --current --namespace=$GITHUB_REF_NAME
-          kustomize edit set namespace $GITHUB_REF_NAME
+          set -euo pipefail
+
+          namespace="$GITHUB_REF_NAME"
+          kubectl create namespace "$namespace" --dry-run=client -o yaml | kubectl apply -f -
+          kubectl wait --for=jsonpath='{.status.phase}'=Active "namespace/$namespace" --timeout=60s
+          kubectl config set-context --current --namespace="$namespace"
+
+          cd "$EXERCISE_DIR/manifests"
+          kustomize edit set namespace "$namespace"
           kustomize edit set image \
             APP/IMAGE="$APP_IMAGE_TAG" \
             SERVER/IMAGE="$SERVER_IMAGE_TAG"
@@ -88,7 +133,7 @@ jobs:
           kubectl get serviceaccount "$STORAGE_KSA"
 
           PROJECT_NUMBER="$(gcloud projects describe "$PROJECT_ID" --format='value(projectNumber)')"
-          STORAGE_PRINCIPAL="principal://iam.googleapis.com/projects/${PROJECT_NUMBER}/locations/global/workloadIdentityPools/${PROJECT_ID}.svc.id.goog/subject/ns/${GITHUB_REF_NAME}/sa/${STORAGE_KSA}"
+          STORAGE_PRINCIPAL="principal://iam.googleapis.com/projects/${PROJECT_NUMBER}/locations/global/workloadIdentityPools/${PROJECT_ID}.svc.id.goog/subject/ns/${namespace}/sa/${STORAGE_KSA}"
           gcloud storage buckets add-iam-policy-binding "gs://${STORAGE_BUCKET}" \
             --role=roles/storage.objectUser \
             --member="$STORAGE_PRINCIPAL" \
