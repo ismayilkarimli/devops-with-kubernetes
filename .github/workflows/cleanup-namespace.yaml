@@ -15,7 +15,6 @@ jobs:
 
     env:
       PROJECT_ID: ${{ secrets.GKE_PROJECT }}
-      NAMESPACE: ${{ github.event.ref }}
       STORAGE_BUCKET: dwk-gke-storage
       STORAGE_KSA: dwk-storage-sa
 
@@ -28,6 +27,24 @@ jobs:
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v3
+
+      - name: Derive namespace
+        env:
+          BRANCH_NAME: ${{ github.event.ref }}
+        run: |
+          set -euo pipefail
+
+          namespace="$(printf '%s' "$BRANCH_NAME" \
+            | tr '[:upper:]' '[:lower:]' \
+            | sed -E 's/[^a-z0-9-]+/-/g; s/-+/-/g; s/^-+//; s/-+$//')"
+
+          if [[ -z "$namespace" || ${#namespace} -gt 63 ]]; then
+            echo "Branch name cannot be converted to a valid namespace: $BRANCH_NAME" >&2
+            exit 1
+          fi
+
+          echo "NAMESPACE=$namespace" >> "$GITHUB_ENV"
+          echo "Cleaning namespace: $namespace"
 
       - name: Get GKE credentials
         uses: google-github-actions/get-gke-credentials@v3

@@ -16,12 +16,6 @@ env:
   GKE_ZONE: europe-north1-b
   REGISTRY: europe-north1-docker.pkg.dev
   REPOSITORY: devops-with-kubernetes-image-hub
-  APP_IMAGE: todo-app
-  SERVER_IMAGE: todo-server
-  APP_DEPLOYMENT: todo-app-dep
-  SERVER_DEPLOYMENT: todo-app-server-dep
-  STORAGE_BUCKET: dwk-gke-storage
-  STORAGE_KSA: dwk-storage-sa
 
 jobs:
   build-publish-deploy:
@@ -55,12 +49,7 @@ jobs:
           project_id: '${{ env.PROJECT_ID }}'
           location: '${{ env.GKE_ZONE }}'
 
-      - name: Form image names
-        run: |
-          echo "APP_IMAGE_TAG=$REGISTRY/$PROJECT_ID/$REPOSITORY/$APP_IMAGE:$GITHUB_SHA" >> "$GITHUB_ENV"
-          echo "SERVER_IMAGE_TAG=$REGISTRY/$PROJECT_ID/$REPOSITORY/$SERVER_IMAGE:$GITHUB_SHA" >> "$GITHUB_ENV"
-
-      - name: Select changed exercise directory
+      - name: Select changed exercise directories
         shell: bash
         env:
           BEFORE_SHA: ${{ github.event.before }}
@@ -79,66 +68,49 @@ jobs:
           )
 
           if ((${#exercise_dirs[@]} == 0)); then
-            echo "No exercise directory changed in this push" >&2
+            echo "No exercise directory changed; nothing to dispatch"
+            echo "EXERCISE_DIRS=" >> "$GITHUB_ENV"
+          else
+            {
+              echo "EXERCISE_DIRS<<EOF"
+              printf '%s\n' "${exercise_dirs[@]}"
+              echo "EOF"
+            } >> "$GITHUB_ENV"
+          fi
+
+          namespace="$(printf '%s' "$GITHUB_REF_NAME" \
+            | tr '[:upper:]' '[:lower:]' \
+            | sed -E 's/[^a-z0-9-]+/-/g; s/-+/-/g; s/^-+//; s/-+$//')"
+
+          if [[ -z "$namespace" || ${#namespace} -gt 63 ]]; then
+            echo "Branch name cannot be converted to a valid namespace: $GITHUB_REF_NAME" >&2
             exit 1
           fi
 
-          if ((${#exercise_dirs[@]} > 1)); then
-            echo "More than one exercise directory changed:" >&2
-            printf ' - %s\n' "${exercise_dirs[@]}" >&2
-            exit 1
-          fi
-
-          exercise_dir="${exercise_dirs[0]}"
-          for required_dir in todo-app todo-server manifests; do
-            if [[ ! -d "$exercise_dir/$required_dir" ]]; then
-              echo "Selected exercise is missing $required_dir: $exercise_dir" >&2
-              exit 1
-            fi
-          done
-
-          echo "Using changed exercise directory: $exercise_dir"
-          echo "EXERCISE_DIR=$exercise_dir" >> "$GITHUB_ENV"
-
-      - name: Build app image
-        run: docker build --platform linux/amd64 --tag "$APP_IMAGE_TAG" "$EXERCISE_DIR/todo-app"
-
-      - name: Build server image
-        run: docker build --platform linux/amd64 --tag "$SERVER_IMAGE_TAG" "$EXERCISE_DIR/todo-server"
-
-      - name: Publish app image
-        run: docker push "$APP_IMAGE_TAG"
-
-      - name: Publish server image
-        run: docker push "$SERVER_IMAGE_TAG"
+          echo "NAMESPACE=$namespace" >> "$GITHUB_ENV"
+          echo "Using namespace: $namespace"
 
       - name: Set up Kustomize
         uses: imranismail/setup-kustomize@v3
 
-      - name: Deploy
+      - name: Run exercise pipelines
         run: |-
           set -euo pipefail
 
-          namespace="$GITHUB_REF_NAME"
-          kubectl create namespace "$namespace" --dry-run=client -o yaml | kubectl apply -f -
-          kubectl wait --for=jsonpath='{.status.phase}'=Active "namespace/$namespace" --timeout=60s
-          kubectl config set-context --current --namespace="$namespace"
+          if [[ -z "${EXERCISE_DIRS:-}" ]]; then
+            echo "No exercise pipelines to run"
+            exit 0
+          fi
 
-          cd "$EXERCISE_DIR/manifests"
-          kustomize edit set namespace "$namespace"
-          kustomize edit set image \
-            APP/IMAGE="$APP_IMAGE_TAG" \
-            SERVER/IMAGE="$SERVER_IMAGE_TAG"
-          kustomize build . | kubectl apply -f -
-          kubectl get serviceaccount "$STORAGE_KSA"
+          while IFS= read -r exercise_dir; do
+            [[ -z "$exercise_dir" ]] && continue
+            pipeline="$exercise_dir/pipeline.sh"
 
-          PROJECT_NUMBER="$(gcloud projects describe "$PROJECT_ID" --format='value(projectNumber)')"
-          STORAGE_PRINCIPAL="principal://iam.googleapis.com/projects/${PROJECT_NUMBER}/locations/global/workloadIdentityPools/${PROJECT_ID}.svc.id.goog/subject/ns/${namespace}/sa/${STORAGE_KSA}"
-          gcloud storage buckets add-iam-policy-binding "gs://${STORAGE_BUCKET}" \
-            --role=roles/storage.objectUser \
-            --member="$STORAGE_PRINCIPAL" \
-            --condition=None
+            if [[ ! -f "$pipeline" ]]; then
+              echo "No pipeline.sh in $exercise_dir; skipping"
+              continue
+            fi
 
-          kubectl rollout status deployment "$APP_DEPLOYMENT" --timeout=5m
-          kubectl rollout status deployment "$SERVER_DEPLOYMENT" --timeout=5m
-          kubectl get services -o wide
+            echo "Running $pipeline"
+            bash "$pipeline"
+          done <<< "$EXERCISE_DIRS"
