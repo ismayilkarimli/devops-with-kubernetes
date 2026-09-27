@@ -15,6 +15,7 @@ jobs:
 
     env:
       PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+      PROJECT_NUMBER: '907446083325'
       STORAGE_BUCKET: dwk-gke-storage
       STORAGE_KSA: dwk-storage-sa
 
@@ -55,7 +56,6 @@ jobs:
 
       - name: Remove bucket access binding
         run: |
-          PROJECT_NUMBER="$(gcloud projects describe "$PROJECT_ID" --format='value(projectNumber)')"
           STORAGE_PRINCIPAL="principal://iam.googleapis.com/projects/${PROJECT_NUMBER}/locations/global/workloadIdentityPools/${PROJECT_ID}.svc.id.goog/subject/ns/${NAMESPACE}/sa/${STORAGE_KSA}"
           gcloud storage buckets remove-iam-policy-binding "gs://${STORAGE_BUCKET}" \
             --role=roles/storage.objectUser \

@@ -2,6 +2,7 @@
 set -euo pipefail
 
 : "${PROJECT_ID:?PROJECT_ID is required}"
+: "${PROJECT_NUMBER:?PROJECT_NUMBER is required}"
 : "${REGISTRY:?REGISTRY is required}"
 : "${REPOSITORY:?REPOSITORY is required}"
 : "${GITHUB_SHA:?GITHUB_SHA is required}"
@@ -34,8 +35,7 @@ kustomize edit set image \
 kustomize build . | kubectl apply -f -
 kubectl get serviceaccount "$storage_ksa"
 
-project_number="$(gcloud projects describe "$PROJECT_ID" --format='value(projectNumber)')"
-storage_principal="principal://iam.googleapis.com/projects/${project_number}/locations/global/workloadIdentityPools/${PROJECT_ID}.svc.id.goog/subject/ns/${NAMESPACE}/sa/${storage_ksa}"
+storage_principal="principal://iam.googleapis.com/projects/${PROJECT_NUMBER}/locations/global/workloadIdentityPools/${PROJECT_ID}.svc.id.goog/subject/ns/${NAMESPACE}/sa/${storage_ksa}"
 gcloud storage buckets add-iam-policy-binding "gs://${storage_bucket}" \
   --role=roles/storage.objectUser \
   --member="$storage_principal" \

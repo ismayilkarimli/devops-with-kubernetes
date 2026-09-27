@@ -12,6 +12,7 @@ permissions:
 
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+  PROJECT_NUMBER: '907446083325'
   GKE_CLUSTER: dwk-gke
   GKE_ZONE: europe-north1-b
   REGISTRY: europe-north1-docker.pkg.dev
