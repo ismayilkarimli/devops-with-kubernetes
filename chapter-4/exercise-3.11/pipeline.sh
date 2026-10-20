@@ -6,8 +6,7 @@ set -euo pipefail
 : "${REGISTRY:?REGISTRY is required}"
 : "${REPOSITORY:?REPOSITORY is required}"
 : "${GITHUB_SHA:?GITHUB_SHA is required}"
-# Exercise 3.11 applies its resource policies and application to default.
-export NAMESPACE=default
+: "${NAMESPACE:?NAMESPACE is required}"
 
 exercise_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 app_image_tag="$REGISTRY/$PROJECT_ID/$REPOSITORY/todo-app:$GITHUB_SHA"
@@ -29,8 +28,12 @@ kubectl wait --for=jsonpath='{.status.phase}'=Active "namespace/$NAMESPACE" --ti
 kubectl config set-context --current --namespace="$NAMESPACE"
 
 cd "$exercise_dir/manifests"
-kubectl apply --namespace="$NAMESPACE" -f limitrange.yaml -f resourcequota.yaml
 kustomize edit set namespace "$NAMESPACE"
+for policy in limitrange.yaml resourcequota.yaml; do
+  kubectl patch --local -f "$policy" --type=merge \
+    -p "{\"metadata\":{\"namespace\":\"$NAMESPACE\"}}" -o yaml \
+    | kubectl apply -f -
+done
 kustomize edit set image \
   APP/IMAGE="$app_image_tag" \
   SERVER/IMAGE="$server_image_tag"
