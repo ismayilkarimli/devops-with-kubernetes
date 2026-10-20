@@ -46,6 +46,7 @@ gcloud storage buckets add-iam-policy-binding "gs://${storage_bucket}" \
   --member="$storage_principal" \
   --condition=None
 
+kubectl rollout status statefulset todo-app-db-sset --timeout=5m
 kubectl rollout status deployment "$app_deployment" --timeout=5m
 kubectl rollout status deployment "$server_deployment" --timeout=5m
 kubectl get services -o wide

@@ -14,7 +14,7 @@ spec:
               image: curlimages/curl:8.5.0
               resources:
                 requests:
-                  cpu: "80m"
+                  cpu: "50m"
                   memory: "102Mi"
                 limits:
                   cpu: "80m"

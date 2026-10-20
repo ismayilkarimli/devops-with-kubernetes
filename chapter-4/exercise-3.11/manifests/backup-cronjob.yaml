@@ -15,7 +15,7 @@ spec:
               image: google/cloud-sdk:slim
               resources:
                 requests:
-                  cpu: "80m"
+                  cpu: "50m"
                   memory: "153Mi"
                 limits:
                   cpu: "120m"
