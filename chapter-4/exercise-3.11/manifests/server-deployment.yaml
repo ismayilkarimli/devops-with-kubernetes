@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-app-server-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-app-server
+  template:
+    metadata:
+      labels:
+        app: todo-app-server
+    spec:
+      containers:
+        - name: todo-app-server
+          image: SERVER/IMAGE
+          resources:
+            requests:
+              cpu: "150m"
+              memory: "256Mi"
+            limits:
+              cpu: "200m"
+              memory: "1Gi"
+          envFrom:
+            - configMapRef:
+                name: todo-app-server-cm
