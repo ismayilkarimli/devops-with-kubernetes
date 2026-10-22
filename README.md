@@ -40,3 +40,4 @@
 9. [Exercise 3.9](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-4/exercise-3.9) - DBaaS vs DIY
 10. [Exercise 3.10](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-4/exercise-3.10) - The project, step 18
 11. [Exercise 3.11](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-4/exercise-3.11) - The project, step 19
+12. [Exercise 3.12](chapter-4/exercise-3.12/README.md) - The project, step 20
