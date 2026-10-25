@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-app-server-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-app-server
+  template:
+    metadata:
+      labels:
+        app: todo-app-server
+    spec:
+      containers:
+        - name: todo-app-server
+          image: SERVER/IMAGE
+          livenessProbe:
+            initialDelaySeconds: 80
+            periodSeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 3
+            httpGet:
+              path: /live
+              port: 8080
+          readinessProbe:
+            initialDelaySeconds: 20
+            periodSeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 3
+            exec:
+              command: ["/server", "--check-db"]
+          envFrom:
+            - configMapRef:
+                name: todo-app-server-cm
