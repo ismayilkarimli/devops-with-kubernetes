@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ping-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ping-db
+  template:
+    metadata:
+      labels:
+        app: ping-db
+    spec:
+      containers:
+        - name: ping-db
+          image: postgres:15
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_DB
+              value: pingdb
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 32Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ping-db-svc
+spec:
+  clusterIP: None
+  selector:
+    app: ping-db
+  ports:
+    - port: 5432

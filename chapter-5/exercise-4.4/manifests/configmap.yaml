@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ping-app-cm
+data:
+  information.txt: |
+      this is text from information.txt
+  MESSAGE: hello world
+  DATABASE_URL: postgres://postgres:postgres@ping-db-svc:5432/pingdb?sslmode=disable
