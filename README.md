@@ -46,3 +46,4 @@
 
 1. [Exercise 4.1](chapter-5/exercise-4.1/README.md) - Readiness probe
 2. [Exercise 4.2](chapter-5/exercise-4.2/README.md) - The project, step 21
+3. [Exercise 4.3](chapter-5/exercise-4.3/README.md) - Prometheus
