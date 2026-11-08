@@ -64,7 +64,7 @@ jobs:
 
           mapfile -t exercise_dirs < <(
             git diff --name-only "$before_sha" "$GITHUB_SHA" \
-              | awk -F/ '$1 == "chapter-4" && $2 ~ /^exercise-/ { print $1 "/" $2 }' \
+              | awk -F/ '($1 == "chapter-4" || $1 == "chapter-5") && $2 ~ /^exercise-/ { print $1 "/" $2 }' \
               | sort -u
           )
 
