@@ -1,0 +1,6 @@
+config:
+  monitor:
+    enabled: true
+
+promExporter:
+  enabled: true

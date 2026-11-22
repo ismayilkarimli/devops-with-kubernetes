@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: todo-app-server-cm
+data:
+  DATABASE_URL: postgres://postgres:postgres@todo-app-db-svc:5432/tododb?sslmode=disable
+  PORT: "8080"
+  TODO_APP_URL: "http://todo-app-svc:2345"
+  NATS_URL: "nats://my-nats.nats.svc.cluster.local:4222"

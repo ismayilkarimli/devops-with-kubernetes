@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: wikipedia-job
+spec:
+  schedule: "0 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: wikipedia
+              image: curlimages/curl:8.5.0
+              command:
+                - /bin/sh
+                - -c
+              args:
+                - |
+                  LOC=$(curl -s -D - https://en.wikipedia.org/wiki/Special:Random -o /dev/null | grep -i '^location:' | awk '{print $2}' | tr -d '\r')
+                  case "$LOC" in //*) LOC="https:$LOC";; esac
+                  ARTICLE=$(basename "$LOC")
+                  TITLE=$(echo "$ARTICLE" | tr '_' ' ')
+                  curl -s -X POST --data-urlencode "todo=Read <a href=\"$LOC\" target=\"_blank\">$TITLE</a>" http://todo-app-server-svc:2345/todos
