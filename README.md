@@ -49,4 +49,4 @@
 3. [Exercise 4.3](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-5/exercise-4.3) - Prometheus
 4. [Exercise 4.4](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-5/exercise-4.4) - Your canary
 5. [Exercise 4.5](https://github.com/ismayilkarimli/devops-with-kubernetes/tree/main/chapter-5/exercise-4.5) - The project, step 22
-6. [Exercise 4.6](chapter-5/exercise-4.6/README.md) - The project, step 23
+6. [Exercise 4.6](chapter-5/exercise-4.6) - The project, step 23
